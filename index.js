@@ -2,6 +2,7 @@ const im = require('gm').subClass({ imageMagick: true });
 const Discord = require('discord.js');
 const fs = require('fs');
 const bot = new Discord.Client();
+const TOKEN = process.env.TOKEN;
 
 const meme = im('meme.jpg');
 const memeoutput = './meme-out.jpg'
