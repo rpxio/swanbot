@@ -25,7 +25,7 @@ const memeify = async (text, channel) =>
       });
   });
 
-const debouncedMeme = async (text, channel) => {
+const debounced = async (text, channel) => {
   let timeoutId;
 
   return () => {
@@ -41,6 +41,8 @@ const debouncedMeme = async (text, channel) => {
     }
   };
 };
+
+const debouncedMeme = debounced();
 
 bot.on("message", (message) => {
   const prefix = "!";
