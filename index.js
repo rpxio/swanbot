@@ -21,8 +21,8 @@ const memeify = async (text, channel) =>
           : channel
               .send("", { files: ["./meme-out.jpg"] })
               .catch((err) => console.log("something broke", err));
+        resolve();
       });
-    resolve();
   });
 
 const debouncedMeme = async (text, channel) => {
