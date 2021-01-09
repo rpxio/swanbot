@@ -1,60 +1,35 @@
-const im = require("gm").subClass({ imageMagick: true });
-const Discord = require("discord.js");
+const im = require('gm').subClass({ imageMagick: true });
+const Discord = require('discord.js');
+const fs = require('fs');
 const bot = new Discord.Client();
 const TOKEN = process.env.TOKEN;
 
-const meme = im("meme.jpg");
+const meme = im('meme.jpg');
+const memeoutput = './meme-out.jpg'
 
-const memeify = async (text, channel) =>
-  new Promise((resolve) => {
+bot.on('message', message => {
+  var prefix = '!'
+  var msg = message.content;
+  var command = msg.split(' ');
+  var cmd = command[0];
+  var text = command.splice(1);
+  var text = text.join(' ');
+  var text = text.toUpperCase();
+
+  if (cmd === prefix + 'swan') {
     meme
-      .font("./impact.ttf")
-      .out("-background", "none")
-      .out("-fill", "black")
-      .out("-interline-spacing", "-2")
-      .out("-size", "300x180", `caption: ${text}`)
-      .out("-geometry", "+80+310")
-      .out("-composite")
-      .write("meme-out.jpg", (err) => {
-        err
-          ? console.log(err)
-          : channel
-              .send("", { files: ["./meme-out.jpg"] })
-              .catch((err) => console.log("something broke", err));
-        resolve();
+      .font('./impact.ttf')
+      .out('-background', 'none')
+      .out('-fill', 'black')
+      .out('-interline-spacing', '-2')
+      .out('-size', '300x180', `caption: ${text}`)
+      .out('-geometry', '+80+310')
+      .out('-composite')
+      .write('meme-out.jpg', (err) => {
+        err ? console.log(err) : message.channel.send('', { files: [ "./meme-out.jpg" ]}).catch(err => console.log('something broke', err));
       });
-  });
-
-const debounced = async (text, channel) => {
-  let timeoutId;
-
-  return () => {
-    if (timeoutId) {
-      channel.send(
-        "Woah! Chill out. Please wait at least 30 seconds since the last swannining."
-      );
-    } else {
-      timeoutId = setTimeout(async () => {
-        await memeify(text, channel);
-        clearTimeout(timeoutId);
-      }, 30 * 1000);
-    }
-  };
-};
-
-const debouncedMeme = debounced();
-
-bot.on("message", (message) => {
-  const prefix = "!";
-  const command = message.content.split(" ");
-  const [cmd, ...text] = command;
-  const imageText = text.join(" ").toUpperCase();
-
-  if (cmd === `${prefix}swan`) {
-    debouncedMeme(imageText, message.channel);
-  } else if (cmd === `swan${prefix}`) {
-    message.channel.send("Did you mean to use `!swan`?");
   }
+
 });
 
 bot.login(TOKEN);
